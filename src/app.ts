@@ -6,6 +6,8 @@ import "dotenv/config";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import productRoutes from "./routes/products.routes";
+import swagger from "@fastify/swagger";
+import scalar from "@scalar/fastify-api-reference";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
@@ -22,7 +24,40 @@ fastify.register(helmet, {
   contentSecurityPolicy: false,
 });
 
-fastify.register(productRoutes, {prefix: "/products"});
+fastify.register(swagger, {
+  openapi: {
+    openapi: "3.0.0",
+    info: {
+      title: "SyntaxWear API",
+      description: "API para o e-commerce Syntax Wear",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: "Servidor de desenvolvimento",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+  },
+});
+
+fastify.register(scalar, {
+  routePrefix: "/api-docs",
+  configuration: {
+    theme: "dark"
+  }
+})
+
+fastify.register(productRoutes, { prefix: "/products" });
 
 // Declare a route
 fastify.get("/", function (request, reply) {
@@ -36,9 +71,9 @@ fastify.get("/", function (request, reply) {
 fastify.get("/health", async (request, reply) => {
   return {
     status: "Ok",
-    timestamp: new Date().toISOString()
-  }
-})
+    timestamp: new Date().toISOString(),
+  };
+});
 
 // Run the server!
 fastify.listen({ port: PORT }, function (err, address) {
@@ -51,5 +86,4 @@ fastify.listen({ port: PORT }, function (err, address) {
   // Server is now listening on ${address}
 });
 
-
-export default fastify
+export default fastify;
