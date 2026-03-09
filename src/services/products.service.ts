@@ -1,5 +1,6 @@
 import { prisma } from "../utils/prisma";
 import { ProductFilters } from "../types";
+import { th } from "zod/v4/locales";
 
 export const getProducts = async (filters: ProductFilters) => {
   const {
@@ -72,3 +73,15 @@ export const getProducts = async (filters: ProductFilters) => {
     },
   };
 };
+
+export const getProductById = async (id: number) => {
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+
+  if(!product) {
+    throw new Error("Produto não encontrado");
+  }
+
+  return product
+}

@@ -36,7 +36,8 @@
     "@scalar/fastify-api-reference": "^1.46.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.4",
-    "fastify": "^5.7.4"
+    "fastify": "^5.7.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { register } from "../controllers/auth.controller";
+import { register, login } from "../controllers/auth.controller";
 
-const schema = {
+const registerSchema = {
   schema: {
     tags: ["Auth"],
     description: "Registra um novo usuário e retorna um token",
@@ -13,12 +13,10 @@ const schema = {
         lastName: { type: "string", description: "Sobrenome do usuário" },
         email: {
           type: "string",
-          format: "email",
           description: "Email do usuário",
         },
         password: {
           type: "string",
-          format: "password",
           description: "Senha do usuário",
         },
         cpf: {
@@ -27,8 +25,8 @@ const schema = {
         },
         birthDate: {
           type: "string",
-          format: "date",
-          description: "Data de nascimento do usuário (opcional) - formato: YYYY-MM-DD",
+          description:
+            "Data de nascimento do usuário (opcional) - formato: YYYY-MM-DD",
         },
         phone: {
           type: "string",
@@ -39,6 +37,28 @@ const schema = {
   },
 };
 
+const loginSchema = {
+  schema: {
+    tags: ["Auth"],
+    description: "Realiza o login de um usuário e retorna um token",
+    body: {
+      type: "object",
+      required: ["email", "password"],
+      properties: {
+        email: {
+          type: "string",
+          description: "Email do usuário",
+        },
+        password: {
+          type: "string",
+          description: "Senha do usuário",
+        },
+      },
+    },
+  },
+};
+
 export default async function authRoutes(fastify: FastifyInstance) {
-  fastify.post("/", schema, register);
+  fastify.post("/register", registerSchema, register);
+  fastify.post("/login", loginSchema, login);
 }
